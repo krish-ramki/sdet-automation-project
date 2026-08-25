@@ -1,8 +1,9 @@
 import {Page, Locator} from '@playwright/test'
+import { BasePage } from '../pages/BasePage';
 
-export class CheckoutPage{
 
-    readonly page: Page;
+export class CheckoutPage extends BasePage{
+
     readonly checkoutButtons: Locator;  
     readonly checkoutCompleteContainer: Locator;
     readonly cartFooter: Locator;
@@ -10,7 +11,7 @@ export class CheckoutPage{
 
     constructor(page: Page){
 
-        this.page = page;
+        super(page);
         this.checkoutButtons = page.locator('.checkout_buttons')
         this.checkoutCompleteContainer = page.locator('.checkout_complete_container')
         this.cartFooter = page.locator('.cart_footer')

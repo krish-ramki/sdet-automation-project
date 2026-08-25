@@ -1,13 +1,14 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from '../pages/BasePage';
 
-export class InventoryPage{
 
-    readonly page: Page;
+export class InventoryPage extends BasePage{
+
     readonly products: string[];
     readonly productCard: Locator; 
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.products = ['Sauce Labs Backpack', 'Sauce Labs Bike Light',
                       'Sauce Labs Bolt T-Shirt', 'Sauce Labs Fleece Jacket',
                       'Sauce Labs Onesie', 'Test.allTheThings() T-Shirt (Red)']

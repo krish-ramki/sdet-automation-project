@@ -1,14 +1,15 @@
 import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from '../pages/BasePage';
 
-export class CartPage {
-    readonly page: Page;
+
+export class CartPage extends BasePage {
     readonly shoppingCartBadge: Locator;
     readonly shoppingCartLink: Locator;
     readonly cartFooter: Locator;
 
 
     constructor(page: Page){
-        this.page = page;
+        super(page);
         this.shoppingCartBadge = page.locator('.shopping_cart_badge')
         this.shoppingCartLink = page.locator('.shopping_cart_link')
         this.cartFooter = page.locator('.cart_footer')
