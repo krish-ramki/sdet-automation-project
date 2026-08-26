@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test'
+import {test,expect} from '../fixtures.ts'
 import { LoginPage } from '../pages/LoginPage'
 import { InventoryPage } from '../pages/InventoryPage';
 import { CartPage } from '../pages/cartPage';
@@ -40,75 +40,31 @@ test('Login with empty password', async({page}) => {
 
 })
 
-test('Product appears on inventory page', async({page}) => {
-    const loginPage = new LoginPage(page)
-    await loginPage.goto()
-    await loginPage.login('standard_user', 'secret_sauce')
-
-    const inventoryPage = new InventoryPage(page);
-    await expect(inventoryPage.getProduct('Sauce Labs Backpack')).toBeVisible()
-    await inventoryPage.productCard.count()
-    
+test('Product appears on inventory page', async({inventoryPage}) => {
+    await inventoryPage.expectAllProductsVisible()
 })
 
-test('Select single product and add to cart', async({page}) => {
-
-    const loginPage = new LoginPage(page);
-    await loginPage.goto()
-    await loginPage.login('standard_user', 'secret_sauce')
-    
-    const inventoryPage = new InventoryPage(page);
+test('Select single product and add to cart', async({inventoryPage, cartPage}) => {
     await inventoryPage.addToCart('Sauce Labs Backpack')
-
-    const cartPage = new CartPage(page);
     await expect(cartPage.shoppingCartBadge).toHaveText('1')
-
-    
 })
 
-test('Add multiple products to cart', async({page}) => {
-
-    const loginPage = new LoginPage(page);
-    await loginPage.goto()
-    await loginPage.login('standard_user', 'secret_sauce')
-    
-    const inventoryPage = new InventoryPage(page);
+test('Add multiple products to cart', async({inventoryPage, cartPage}) => {
     await inventoryPage.addToCart('Sauce Labs Backpack')
-
-    const cartPage = new CartPage(page);
     await expect(cartPage.shoppingCartBadge).toHaveText('1')
-    
     await inventoryPage.addToCart('Sauce Labs Onesie')
     await expect(cartPage.shoppingCartBadge).toHaveText('2')
-
     await inventoryPage.addToCart('Sauce Labs Fleece Jacket')
     await expect(cartPage.shoppingCartBadge).toHaveText('3')
-
 })
 
-test('Remove products from cart', async({page}) => {
-
-    const loginPage = new LoginPage(page);
-    await loginPage.goto()
-    await loginPage.login('standard_user', 'secret_sauce')
-    
-    const inventoryPage = new InventoryPage(page);
+test('Remove products from cart', async({inventoryPage}) => {
     await inventoryPage.addToCart('Sauce Labs Backpack')
-
     await inventoryPage.removeProduct('Sauce Labs Backpack')
-
 })
 
-test('Complete checkout flow', async({page}) => {
-
-    const loginPage = new LoginPage(page);
-    await loginPage.goto()
-    await loginPage.login('standard_user', 'secret_sauce')
-    
-    const inventoryPage = new InventoryPage(page);
+test('Complete checkout flow', async({inventoryPage, cartPage, checkoutPage}) => {
     await inventoryPage.addToCart('Sauce Labs Backpack')
-
-    const cartPage = new CartPage(page);
     await cartPage.shoppingCartLink.click()
     await cartPage.continueShopping()
 
@@ -117,15 +73,12 @@ test('Complete checkout flow', async({page}) => {
     
     await cartPage.checkout()
 
-    const checkoutPage = new CheckoutPage(page);
     await checkoutPage.fillFormFields('First Name', 'fname')
     await checkoutPage.fillFormFields('Last Name', 'lname')
     await checkoutPage.fillFormFields('Zip/Postal Code', '99999')
     await checkoutPage.continueButton()
     await checkoutPage.finish()
-
     await expect(checkoutPage.checkoutCompleteContainer.getByText('Thank you for your order!')).toBeVisible()
-
 })
 
 test('Logout', async({page}) => {

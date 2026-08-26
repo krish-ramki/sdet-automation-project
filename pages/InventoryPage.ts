@@ -31,5 +31,11 @@ export class InventoryPage extends BasePage{
         return product.getByRole('button', {name: 'Remove'}).click()
     }
 
+    async expectAllProductsVisible(){
+        for(const name of this.products){
+            await expect(this.getProduct(name)).toBeVisible()
+        }  
+    }
+    
 
 }
